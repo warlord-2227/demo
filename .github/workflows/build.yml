@@ -47,6 +47,9 @@ jobs:
       
       - name: Authenticate with gcloud
         run: gcloud auth activate-service-account --key-file="gcp_key.json"
+      
+      - name: Set Google Cloud SDK project ID
+        run: gcloud config set project my-project-6242-308916
 
       - name: Terraform Plan
         run: terraform plan
