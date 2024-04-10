@@ -23,30 +23,30 @@ jobs:
         with:
           version: 'latest'
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Write secret key to file
-        run: echo '${{ secrets.GCP_SA_KEY }}' > gcp_key.json
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}      
+          
+      - name: Write GCP Key to File
+        run: echo '${{ secrets.GCP_SA_KEY }}' > ${{ github.workspace }}/gcp_key.json
       
       - name: Create terraform.rc file for Terraform Cloud Credentials
         run: |
-          echo "credentials \"app.terraform.io\" {" > terraform.rc
-          echo "  token = \"${{ secrets.TF_CLOUD_TOKEN }}\"" >> terraform.rc
-          echo "}" >> terraform.rc
+          echo "credentials \"app.terraform.io\" {" > ${{ github.workspace }}/terraform.rc
+          echo "  token = \"${{ secrets.TF_CLOUD_TOKEN }}\"" >> ${{ github.workspace }}/terraform.rc
+          echo "}" >> ${{ github.workspace }}/terraform.rc
 
       - name: Terraform Init
-        run:  terraform init
+        run: terraform init
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
-          TF_CLI_CONFIG_FILE: ${{ github.workspace }}/services/ad_score/terraform/terraform.rc
-
+          TF_CLI_CONFIG_FILE: ${{ github.workspace }}/terraform.rc
 
       - name: Terraform Plan
         run: terraform plan -var="google_credentials=${{ github.workspace }}/gcp_key.json"
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
+          TF_CLI_CONFIG_FILE: ${{ github.workspace }}/terraform.rc
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test_main' && github.event_name == 'push'
