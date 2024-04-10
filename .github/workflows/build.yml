@@ -11,68 +11,38 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
 
-    # Use the Bash shell regardless of the GitHub Actions runner's operating system
-    defaults:
-      run:
-        shell: bash
-
     steps:
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          version: 'latest'
-
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
         with:
-          terraform_wrapper: false
-          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          version: 'latest'
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Write secret key to file
+        run: echo '${{ secrets.GCP_SA_KEY }}' > gcp_key.json
 
       - name: Terraform Init
         run: terraform init
         working-directory: services/ad_score/terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-      
-      - name: Debug Secret Value
-        run: echo "${{ secrets.GCP_SA_KEY }}"
-
-      - name: Write secret key to file
-        run: echo '${{ secrets.GCP_SA_KEY }}' > gcp_key.json
-      
-      - name: Archive gcp_key.json as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: gcp-key
-          path: gcp_key.json
-      
-      - name: Authenticate with gcloud
-        run: gcloud auth activate-service-account --key-file="gcp_key.json"
-      
-      - name: Set Google Cloud SDK project ID
-        run: gcloud config set project my-project-6242-308916
-      
-      - name: Download gcp-key artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: gcp-key
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
 
       - name: Terraform Plan
-        run: terraform plan 
+        run: terraform plan -var="google_credentials=${{ github.workspace }}/gcp_key.json"
         working-directory: services/ad_score/terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: gcp_key.json
-
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test_main' && github.event_name == 'push'
-        run: |
-          cd services/ad_score/terraform
-          terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="google_credentials=${{ github.workspace }}/gcp_key.json"
+        working-directory: services/ad_score/terraform
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: gcp_key.json
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
