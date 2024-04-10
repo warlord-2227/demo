@@ -64,6 +64,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -var="google_credentials=gcp_key.json" 
+        working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: gcp_key.json
 
