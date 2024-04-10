@@ -23,6 +23,7 @@ terraform {
 provider "google" {
   project     = "my-project-6242-308916"
   region      = "us-central1"
+  credentials =  var.google_credentials
   scopes      = ["https://www.googleapis.com/auth/compute", "https://www.googleapis.com/auth/cloud-platform"]
 }
                                                                                                                                              
