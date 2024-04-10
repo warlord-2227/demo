@@ -45,16 +45,27 @@ jobs:
       - name: Write secret key to file
         run: echo '${{ secrets.GCP_SA_KEY }}' > gcp_key.json
       
+      - name: Archive gcp_key.json as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: gcp-key
+          path: gcp_key.json
+      
       - name: Authenticate with gcloud
         run: gcloud auth activate-service-account --key-file="gcp_key.json"
       
       - name: Set Google Cloud SDK project ID
         run: gcloud config set project my-project-6242-308916
+      
+      - name: Download gcp-key artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: gcp-key
 
       - name: Terraform Plan
-        run: terraform plan -var="google_credentials=gcp_key.json" -chdir=services/ad_score/terraform
+        run: terraform plan -var="google_credentials=gcp_key.json" 
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: gcp_key.json
 
 
       - name: Terraform Apply
@@ -63,4 +74,4 @@ jobs:
           cd services/ad_score/terraform
           terraform apply -auto-approve
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: gcp_key.json
