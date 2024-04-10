@@ -33,7 +33,7 @@ jobs:
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_API_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
 
       - name: Terraform Plan
         run: terraform plan -var="google_credentials=${{ github.workspace }}/gcp_key.json"
