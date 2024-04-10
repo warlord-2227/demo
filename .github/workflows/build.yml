@@ -29,11 +29,16 @@ jobs:
         run: echo '${{ secrets.GCP_SA_KEY }}' > gcp_key.json
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          echo "credentials \"app.terraform.io\" {" > terraform.rc
+          echo "  token = \"${{ secrets.TF_CLOUD_TOKEN }}\"" >> terraform.rc
+          echo "}" >> terraform.rc
+          terraform init
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
-          TF_API_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
+          TF_CLI_CONFIG_FILE: ${{ github.workspace }}/services/ad_score/terraform/terraform.rc
+
 
       - name: Terraform Plan
         run: terraform plan -var="google_credentials=${{ github.workspace }}/gcp_key.json"
