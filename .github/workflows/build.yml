@@ -1,0 +1,7 @@
+name: 'testing flow'
+on: push
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    - run: node --version
+    - run: npm --version
