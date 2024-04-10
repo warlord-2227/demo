@@ -52,11 +52,11 @@ jobs:
         run: gcloud config set project my-project-6242-308916
 
       - name: Terraform Plan
-        run: terraform plan -var="google_credentials=${{ secrets.GCP_SA_KEY }}"
+        run: terraform plan -var="google_credentials='${{ secrets.GCP_SA_KEY }}'"
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-          google_credentials: ${{ secrets.GCP_SA_KEY }}
+
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test_main' && github.event_name == 'push'
