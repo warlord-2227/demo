@@ -47,15 +47,13 @@ jobs:
       
       - name: Authenticate with gcloud
         run: gcloud auth activate-service-account --key-file="gcp_key.json"
-      
-      - name: Remove the temporary key file
-        run: rm gcp_key.json
 
       - name: Terraform Plan
         run: terraform plan
         working-directory: services/ad_score/terraform
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          google_credentials: ${{ secrets.GCP_SA_KEY }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test_main' && github.event_name == 'push'
