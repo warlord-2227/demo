@@ -25,11 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Debug Google Cloud credentials
-        run: echo "Google Cloud credentials: $GOOGLE_APPLICATION_CREDENTIALS"
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
