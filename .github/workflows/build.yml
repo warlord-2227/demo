@@ -46,7 +46,7 @@ jobs:
         run: echo "${{ secrets.GCP_SA_KEY }}" > gcp_key.json
       
       - name: Authenticate with gcloud
-        run: gcloud auth activate-service-account --key-file=gcp_key.json
+        run: gcloud auth activate-service-account --key-file="gcp_key.json"
       
       - name: Remove the temporary key file
         run: rm gcp_key.json
