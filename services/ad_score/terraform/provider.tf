@@ -26,6 +26,6 @@ provider "google" {
   region      = "us-central1"
   scopes      = ["https://www.googleapis.com/auth/compute", "https://www.googleapis.com/auth/cloud-platform"]
 }
-~                                                                                                                                             
-~                                                                                                                                             
-~       
+                                                                                                                                             
+                                                                                                                                             
+       
