@@ -28,3 +28,35 @@ resource "google_storage_bucket_object" "function_code" {
   # Assuming the function.zip file is already created and available at the root of the Terraform directory
   source = "function.zip"
 }
+
+# Pub/Sub Topics
+resource "google_pubsub_topic" "trigger_topic" {
+  name = "pubsub-trigger-topic"
+}
+
+resource "google_pubsub_topic" "result_topic" {
+  name = "pubsub-result-topic"
+}
+
+# Google Cloud Function
+resource "google_cloudfunctions_function" "cloud_function" {
+  name                  = "ad-score-function"
+  description           = "A function triggered by Pub/Sub to process ad scores"
+  runtime               = "python310"  # Specify your runtime
+  available_memory_mb   = 256
+  source_archive_bucket = google_storage_bucket.bucket.name
+  source_archive_object = google_storage_bucket_object.function_code.name
+  entry_point           = "Hello_pubsub"  # Replace with your function's entry point
+
+  event_trigger {
+    event_type = "providers/cloud.pubsub/eventTypes/topic.publish"
+    resource   = google_pubsub_topic.trigger_topic.id
+  }
+
+  environment_variables = {
+    RESULT_TOPIC = google_pubsub_topic.result_topic.id
+  }
+
+  project = var.project_id
+  region  = var.bucket_location
+}
