@@ -28,7 +28,8 @@ jobs:
           gsutil -m cp -r ./services/ad_score/src/model gs://mast-bucket-che-abc-abcd/mam/
           gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/model/
           gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/config/
-
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
