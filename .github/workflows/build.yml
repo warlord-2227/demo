@@ -31,7 +31,10 @@ jobs:
         with:
           version: 'latest'
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}      
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}   
+      
+      - name: Verify GCloud Auth
+        run: gcloud auth list   
 
       - name: Write GCP Key to File
         run: echo '${{ secrets.GCP_SA_KEY }}' > ${{ github.workspace }}/gcp_key.json
@@ -41,7 +44,14 @@ jobs:
           echo "credentials \"app.terraform.io\" {" > ${{ github.workspace }}/terraform.rc
           echo "  token = \"${{ secrets.TF_CLOUD_TOKEN }}\"" >> ${{ github.workspace }}/terraform.rc
           echo "}" >> ${{ github.workspace }}/terraform.rc
-      
+
+      - name: Authenticate with Google Cloud
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+        run: gcloud auth activate-service-account --key-file="${{ github.workspace }}/gcp_key.json"
+        working-directory: services/ad_score      
+
+
       - name: Upload Model and Config Directories to GCS
         run: |
           gsutil -m cp -r ./services/ad_score/src/model gs://mast-bucket-che-abc-abcd/models
