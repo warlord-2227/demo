@@ -54,8 +54,8 @@ jobs:
 
       - name: Upload Model and Config Directories to GCS
         run: |
-          gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/models
-          gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/config/
+          gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/
+          gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
 

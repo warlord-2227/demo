@@ -11,7 +11,8 @@ import utilities
 def load_model(object_type,config):
     bucket_name = config['load_model']['bucket_name']
     if object_type == "model":
-        blob_name = "pkl/merlin-prod-ad_scoring-meta-brkfst-1.pkl"
+        # blob_name = "pkl/merlin-prod-ad_scoring-meta-brkfst-1.pkl"
+        blob_name = "model/merlin-prod-ad_scoring-meta-brkfst-1.pkl"
     elif object_type == "scaler":
         blob_name = "scaler/scaler.pkl"
     elif object_type == "transformer":

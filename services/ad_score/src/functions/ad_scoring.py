@@ -7,11 +7,12 @@ import google.cloud.logging
 import logging
 import json
 import base64
-
+BUCKET_NAME="mast-bucket-che-abc-abcd" 
 class ad_scoring_model():
     def __init__(self):
         storage_client = storage.Client()
-        bucket = storage_client.bucket("sd_storage-ad_score-meta-dev")
+        bucket = storage_client.bucket(BUCKET_NAME)
+        #bucket = storage_client.bucket("sd_storage-ad_score-meta-dev")
         blob = bucket.blob("config/config.json")
         json_data = (blob.download_as_string()).decode('utf-8')
         self.config = json.loads(json_data)
