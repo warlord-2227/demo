@@ -27,14 +27,18 @@ resource "google_storage_bucket" "bucket" {
   uniform_bucket_level_access = true
 }
 
-data "archive_file" "function_zip" {
-  type        = "zip"
-  source_dir  = local.source_code_dir
-  output_path = local.output_zip_path
+resource "null_resource" "zip_function_code" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "zip -r ${local.output_zip_path} ${local.source_code_dir}"
+  }
 }
 
 resource "google_storage_bucket_object" "function_code" {
   name   = local.function_code_object_name
   bucket = google_storage_bucket.bucket.name
-  source = data.archive_file.function_zip.output_path
+  source = local.output_zip_path
 }
