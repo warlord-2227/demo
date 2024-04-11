@@ -13,12 +13,6 @@ variable "bucket_location" {
   default     = "us-central1"
 }
 
-locals {
-  source_code_dir  = "../src/functions"
-  output_zip_path  = "function.zip"
-  function_code_object_name = "functions"
-}
-
 resource "google_storage_bucket" "bucket" {
   name                        = var.bucket_name
   project                     = var.project_id
@@ -27,19 +21,10 @@ resource "google_storage_bucket" "bucket" {
   uniform_bucket_level_access = true
 }
 
-resource "null_resource" "list_directory" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      ls -la 
-      pwd
-      cd ..
-      ls -la
-    EOT
-  }
+resource "google_storage_bucket_object" "function_code" {
+  name   = "function.zip"
+  bucket = google_storage_bucket.bucket.name
+  # Assuming the function.zip file is already created and available at the root of the Terraform directory
+  source = "function.zip"
 }
-
-

@@ -18,6 +18,17 @@ jobs:
       - name: Install ZIP
         run: sudo apt-get update && sudo apt-get install zip -y
 
+      - name: Zip Function Code
+        run: |
+          zip -r function.zip ./services/ad_score/src/functions
+          mv function.zip ./services/ad_score/terraform/
+
+      - name: Upload Model and Config Directories to GCS
+        run: |
+          gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/model
+          gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/config
+
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
