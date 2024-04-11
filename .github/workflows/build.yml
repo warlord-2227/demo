@@ -23,13 +23,6 @@ jobs:
           zip -r function.zip ./services/ad_score/src/functions
           mv function.zip ./services/ad_score/terraform/
 
-      - name: Upload Model and Config Directories to GCS
-        run: |
-          gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/model/
-          gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/config/
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
@@ -48,6 +41,14 @@ jobs:
           echo "credentials \"app.terraform.io\" {" > ${{ github.workspace }}/terraform.rc
           echo "  token = \"${{ secrets.TF_CLOUD_TOKEN }}\"" >> ${{ github.workspace }}/terraform.rc
           echo "}" >> ${{ github.workspace }}/terraform.rc
+      
+      - name: Upload Model and Config Directories to GCS
+        run: |
+          gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/model/
+          gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/config/
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
+
 
       - name: Terraform Init
         run: terraform init
