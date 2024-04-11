@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+        
       - name: Install ZIP
         run: sudo apt-get update && sudo apt-get install zip -y
 
@@ -63,8 +63,8 @@ jobs:
         if: github.ref == 'refs/heads/main' || (github.ref == 'refs/heads/test_main' && github.event_name == 'push')
         run: |
           gcp_credentials=$(cat ${{ github.workspace }}/gcp_key.json)
-          cd services/ad_score/terraform
           terraform apply -auto-approve -var="google_credentials=${gcp_credentials}"
+        working-directory: services/ad_score/terraform
         env:
           TF_CLI_CONFIG_FILE: ${{ github.workspace }}/terraform.rc
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
