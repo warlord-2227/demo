@@ -45,8 +45,8 @@ jobs:
         run: pwd
 
       - name: List Directory Contents
-        run: ls -la
-              
+        run: ls -la services/ad_score/src/functions
+
       - name: Terraform Plan
         run: |
           gcp_credentials=$(cat /home/runner/work/demo/demo/gcp_key.json)
