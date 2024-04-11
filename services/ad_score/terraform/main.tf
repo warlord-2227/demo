@@ -5,7 +5,7 @@ variable "project_id" {
 
 variable "bucket_name" {
   description = "The name of the Google Cloud Storage bucket"
-  default     = "mast-bucket-che-abc-abc" # Ensure this is globally unique
+  default     = "mast-bucket-che-abc-abc"  # Ensure this is globally unique
 }
 
 variable "bucket_location" {
@@ -13,19 +13,10 @@ variable "bucket_location" {
   default     = "us-central1"
 }
 
-variable "source_code_dir" {
-  description = "The directory of the source code for the function"
-  default     = "${path.module}/../services/ad_score/src/functions"
-}
-
-variable "output_zip_path" {
-  description = "The output path for the zipped source code"
-  default     = "${path.module}/function.zip"
-}
-
-variable "function_code_object_name" {
-  description = "The object name for the function code in the bucket"
-  default     = "functions"
+locals {
+  source_code_dir  = "${path.module}/../services/ad_score/src/functions"
+  output_zip_path  = "${path.module}/function.zip"
+  function_code_object_name = "functions"
 }
 
 resource "google_storage_bucket" "bucket" {
@@ -38,12 +29,12 @@ resource "google_storage_bucket" "bucket" {
 
 data "archive_file" "function_zip" {
   type        = "zip"
-  source_dir  = var.source_code_dir
-  output_path = var.output_zip_path
+  source_dir  = local.source_code_dir
+  output_path = local.output_zip_path
 }
 
 resource "google_storage_bucket_object" "function_code" {
-  name   = var.function_code_object_name
+  name   = local.function_code_object_name
   bucket = google_storage_bucket.bucket.name
   source = data.archive_file.function_zip.output_path
 }
