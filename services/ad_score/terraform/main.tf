@@ -33,7 +33,7 @@ resource "null_resource" "list_directory" {
   }
 
   provisioner "local-exec" {
-    command = "ls -la ../src/functions"
+    command = "ls -la "
   }
 }
 
@@ -45,6 +45,7 @@ resource "null_resource" "zip_function_code" {
 }
 
 resource "google_storage_bucket_object" "function_code" {
+  depends_on = [null_resource.zip_function_code]
   name   = local.function_code_object_name
   bucket = google_storage_bucket.bucket.name
   source = local.output_zip_path
