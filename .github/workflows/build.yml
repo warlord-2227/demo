@@ -20,8 +20,9 @@ jobs:
 
       - name: Zip Function Code
         run: |
-          zip -r function.zip ./services/ad_score/src/functions
-          mv function.zip ./services/ad_score/terraform/
+          cd ./services/ad_score/src/functions
+          zip -r function.zip .
+          mv function.zip ../../terraform/
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -56,6 +57,7 @@ jobs:
         run: |
           gsutil -m cp -r ./services/ad_score/src/model gs://${{ secrets.GCS_BUCKET_NAME }}/
           gsutil -m cp -r ./services/ad_score/src/config gs://${{ secrets.GCS_BUCKET_NAME }}/
+          
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
 
