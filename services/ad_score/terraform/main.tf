@@ -14,8 +14,8 @@ variable "bucket_location" {
 }
 
 locals {
-  source_code_dir  = "services/ad_score/src/functions"
-  output_zip_path  = "${path.module}/function.zip"
+  source_code_dir  = "../src/functions"
+  output_zip_path  = "function.zip"
   function_code_object_name = "functions"
 }
 
