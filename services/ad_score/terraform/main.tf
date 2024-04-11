@@ -33,7 +33,10 @@ resource "null_resource" "list_directory" {
   }
 
   provisioner "local-exec" {
-    command = "ls -la "
+    command = command = <<EOT
+      pwd
+      cd ../src/functions && ls -la
+    EOT
   }
 }
 
