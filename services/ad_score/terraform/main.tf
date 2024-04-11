@@ -43,7 +43,7 @@ resource "google_cloudfunctions_function" "cloud_function" {
   name                  = "ad-score-function"
   description           = "A function triggered by Pub/Sub to process ad scores"
   runtime               = "python310"  # Specify your runtime
-  available_memory_mb   = 256
+  available_memory_mb   = 1024
   source_archive_bucket = google_storage_bucket.bucket.name
   source_archive_object = google_storage_bucket_object.function_code.name
   entry_point           = "Hello_pubsub"  # Replace with your function's entry point
