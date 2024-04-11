@@ -41,6 +41,12 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp_key.json
           TF_CLI_CONFIG_FILE: ${{ github.workspace }}/terraform.rc
 
+      - name: Print Current Directory
+        run: pwd
+
+      - name: List Directory Contents
+        run: ls -la
+              
       - name: Terraform Plan
         run: |
           gcp_credentials=$(cat /home/runner/work/demo/demo/gcp_key.json)

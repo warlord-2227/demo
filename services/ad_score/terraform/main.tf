@@ -26,15 +26,3 @@ resource "google_storage_bucket" "bucket" {
   storage_class               = "STANDARD"
   uniform_bucket_level_access = true
 }
-
-data "archive_file" "function_zip" {
-  type        = "zip"
-  source_dir  = local.source_code_dir
-  output_path = local.output_zip_path
-}
-
-resource "google_storage_bucket_object" "function_code" {
-  name   = local.function_code_object_name
-  bucket = google_storage_bucket.bucket.name
-  source = data.archive_file.function_zip.output_path
-}
