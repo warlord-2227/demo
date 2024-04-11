@@ -27,11 +27,18 @@ resource "google_storage_bucket" "bucket" {
   uniform_bucket_level_access = true
 }
 
-resource "null_resource" "zip_function_code" {
+resource "null_resource" "list_directory" {
   triggers = {
     always_run = "${timestamp()}"
   }
 
+  provisioner "local-exec" {
+    command = "ls -la ../src/functions"
+  }
+}
+
+
+resource "null_resource" "zip_function_code" {
   provisioner "local-exec" {
     command = "zip -r ${local.output_zip_path} ${local.source_code_dir}"
   }
