@@ -42,11 +42,11 @@ resource "google_pubsub_topic" "result_topic" {
 resource "google_cloudfunctions_function" "cloud_function" {
   name                  = "ad-score-function"
   description           = "A function triggered by Pub/Sub to process ad scores"
-  runtime               = "python310"  # Specify your runtime
+  runtime               = "python310"  
   available_memory_mb   = 1024
   source_archive_bucket = google_storage_bucket.bucket.name
   source_archive_object = google_storage_bucket_object.function_code.name
-  entry_point           = "Hello_pubsub"  # Replace with your function's entry point
+  entry_point           = "hello_pubsub"  
 
   event_trigger {
     event_type = "providers/cloud.pubsub/eventTypes/topic.publish"
@@ -55,6 +55,7 @@ resource "google_cloudfunctions_function" "cloud_function" {
 
   environment_variables = {
     RESULT_TOPIC = google_pubsub_topic.result_topic.id
+    BUCKET_NAME  = google_storage_bucket.bucket.name
   }
 
   project = var.project_id

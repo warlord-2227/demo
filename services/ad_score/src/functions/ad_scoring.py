@@ -7,12 +7,16 @@ import google.cloud.logging
 import logging
 import json
 import base64
-BUCKET_NAME="mast-bucket-che-abc-abcd" 
+import os 
+BUCKET_NAME="mast-bucket-che-abc-abcd"
+CONFIG_NAME="config" 
+
 class ad_scoring_model():
     def __init__(self):
         storage_client = storage.Client()
         bucket = storage_client.bucket(BUCKET_NAME)
         #bucket = storage_client.bucket("sd_storage-ad_score-meta-dev")
+        # TODO add env or name of config/define across project that it will be config
         blob = bucket.blob("config/config.json")
         json_data = (blob.download_as_string()).decode('utf-8')
         self.config = json.loads(json_data)
@@ -24,7 +28,7 @@ class ad_scoring_model():
 
         return self.model_performance
 
-    def predicting_model(self,event):
+    def predicting_model(self,event,env_variables):
         """to get the predictions, probabilities and scores by ad_scoring_model.dict_metrics"""
         logging.getLogger().setLevel(logging.INFO)
         pubsub_message = base64.b64decode(event["data"]).decode('utf-8')
@@ -47,7 +51,9 @@ class ad_scoring_model():
         logging.info("Output json pushed to cloud storage bucket")
         # Pushing to Pub-Sub
         publisher = pubsub_v1.PublisherClient()
-        result_topic = "projects/within-merlin/topics/pubsub-ad_score-meta-dev"
+        # TODO config driven 
+        # result_topic = "projects/within-merlin/topics/pubsub-ad_score-meta-dev"
+        result_topic = env_variables["result_topic"]
         future = publisher.publish(result_topic, data=json.dumps(json_output).encode('utf-8'))
         logging.info("Output json pushed to Pub/Sub")
         return json_output

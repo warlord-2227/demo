@@ -1,23 +1,24 @@
-
-import lib_main as training
-import predict as testing
-import pre_process
-import utilities
+import base64
+import json
+import numpy as np
+import pandas as pd
+import pickle
+import joblib
+import sklearn
 from google.cloud import storage, pubsub_v1
 import google.cloud.logging
 import logging
-import json
-import base64
+from io import BytesIO
+from ad_scoring import ad_scoring_model
 import os 
+ad_model = ad_scoring_model()
+client = google.cloud.logging.Client(project="project")
+client.setup_logging()
 
-def Hello_pubsub(cloud_event,context):
-    logging.getLogger().setLevel(logging.INFO)
-    pubsub_message = base64.b64decode(cloud_event["data"]).decode('utf-8')
-    input_data = json.loads(pubsub_message)
-    logging.info(f"Keys in it {input_data.keys()}")
-    publisher = pubsub_v1.PublisherClient()
-    # result_topic = "projects/my-project-6242-308916/topics/pubsub-ad_score-meta-dev"
+def hello_pubsub(cloud_event,context):
+    # Print out the data from Pub/Sub, to prove that it worked
+    #TODO clear all the     
     result_topic = os.getenv('RESULT_TOPIC')
-    json_output = {"abc":1}
-    future = publisher.publish(result_topic, data=json.dumps(json_output).encode('utf-8'))
+    env_variables = {"result_topic":result_topic,"bucket_name":os.getenv('BUCKET_NAME')}
     
+    ad_model.predicting_model(cloud_event,env_variables)

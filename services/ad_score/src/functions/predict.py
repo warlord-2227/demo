@@ -6,12 +6,17 @@ import google.cloud.logging
 import logging
 from io import BytesIO
 import utilities
-
+import os 
+BUCKET_NAME="mast-bucket-che-abc-abcd"
 # Define function to load pre-trained models/scalers/transformers etc.
 def load_model(object_type,config):
-    bucket_name = config['load_model']['bucket_name']
+    # TODO remove this from here and use env variable 
+    #bucket_name = config['load_model']['bucket_name']
+    # bucket_name = os.getenv("BUCKET_NAME")
+    bucket_name =BUCKET_NAME
     if object_type == "model":
         # blob_name = "pkl/merlin-prod-ad_scoring-meta-brkfst-1.pkl"
+        # TODO this has to be properly config driven 
         blob_name = "model/merlin-prod-ad_scoring-meta-brkfst-1.pkl"
     elif object_type == "scaler":
         blob_name = "scaler/scaler.pkl"

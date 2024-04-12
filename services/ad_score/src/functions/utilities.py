@@ -18,7 +18,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.compose import ColumnTransformer
 import pre_process
-
+import os 
+BUCKET_NAME="" 
 def split_data(data, config):
     y = data['Label']
     X = data.drop(['Label'], axis=1).replace(np.nan, 0)
@@ -145,12 +146,14 @@ def upload_to_storage(json_data, type, config):
     account_platform_id = json_data['account_details'][account_from]['account_platform_id']
     file_name_str = str(account_from+"--"+account_name+"--account_id_"+str(account_id)+"--"+account_platform_name+"--account_platform_id_"+str(account_platform_id))
     if type == 'input':
-        bucket_name = config['upload_to_storage_input']['bucket_name']
+        bucket_name = BUCKET_NAME
+        # bucket_name = config['upload_to_storage_input']['bucket_name']
         folder_name = config['upload_to_storage_input']['folder_name']
         output_file_name = config['upload_to_storage_input']['output_file_name']
         output_file_name = 'input_'+file_name_str+'__'+dt.datetime.now().strftime('%Y-%m-%d - %H:%M:%S:%f %p %Z')+'.json'
     elif type == 'output':
-        bucket_name = config['upload_to_storage_output']['bucket_name']
+        # bucket_name = config['upload_to_storage_output']['bucket_name']
+        bucket_name = BUCKET_NAME
         folder_name = config['upload_to_storage_output']['folder_name']
         output_file_name = config['upload_to_storage_output']['output_file_name']
         output_file_name = 'output_'+file_name_str+'__'+dt.datetime.now().strftime('%Y-%m-%d - %H:%M:%S:%f %p %Z')+'.json'
