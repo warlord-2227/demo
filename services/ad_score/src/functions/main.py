@@ -10,7 +10,7 @@ import json
 import base64
 import os 
 
-def Hello_pubsub(cloud_event,context):
+def hello_pubsub(cloud_event,context):
     logging.getLogger().setLevel(logging.INFO)
     pubsub_message = base64.b64decode(cloud_event["data"]).decode('utf-8')
     input_data = json.loads(pubsub_message)
