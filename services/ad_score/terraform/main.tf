@@ -5,7 +5,7 @@ variable "project_id" {
 
 variable "bucket_name" {
   description = "The name of the Google Cloud Storage bucket"
-  default     = "mast-bucket-che-abc-abcd"  # Ensure this is globally unique
+  default     = "mast-bucket-che-abc-abcd"  
 }
 
 variable "bucket_location" {
