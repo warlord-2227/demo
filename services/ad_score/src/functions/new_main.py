@@ -15,7 +15,7 @@ ad_model = ad_scoring_model()
 client = google.cloud.logging.Client(project="project")
 client.setup_logging()
 
-def hello_pubsub(cloud_event,context):
+def Hello_pubsub(cloud_event,context):
     # Print out the data from Pub/Sub, to prove that it worked
     #TODO clear all the     
     result_topic = os.getenv('RESULT_TOPIC')

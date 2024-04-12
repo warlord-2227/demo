@@ -46,7 +46,8 @@ resource "google_cloudfunctions_function" "cloud_function" {
   available_memory_mb   = 1024
   source_archive_bucket = google_storage_bucket.bucket.name
   source_archive_object = google_storage_bucket_object.function_code.name
-  entry_point           = "hello_pubsub"  
+  entry_point           = "hello_pubsub"
+  environment = "gen2"  
 
   event_trigger {
     event_type = "providers/cloud.pubsub/eventTypes/topic.publish"
