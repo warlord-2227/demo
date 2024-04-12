@@ -77,7 +77,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          gcp_credentials=$(cat /home/runner/work/demo/demo/gcp_key.json)
+          gcp_credentials=$(cat ${{ github.workspace }}/gcp_key.json)
           terraform plan -var="google_credentials=${gcp_credentials}"
         working-directory: services/ad_score/terraform
         env:
