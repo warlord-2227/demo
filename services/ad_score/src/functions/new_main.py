@@ -18,7 +18,12 @@ client.setup_logging()
 def Hello_pubsub(cloud_event,context):
     # Print out the data from Pub/Sub, to prove that it worked
     #TODO clear all the     
-    result_topic = os.getenv('RESULT_TOPIC')
-    env_variables = {"result_topic":result_topic,"bucket_name":os.getenv('BUCKET_NAME')}
-    
-    ad_model.predicting_model(cloud_event,env_variables)
+    # result_topic = os.getenv('RESULT_TOPIC')
+    logging.getLogger().setLevel(logging.INFO)
+    # env_variables = {"result_topic":result_topic,"bucket_name":os.getenv('BUCKET_NAME')}
+    try:
+        ad_model.predicting_model(cloud_event)
+        logging.info(f"Successfully worked")
+    except Exception as e:
+        logging.info(f"error as {e}")
+        

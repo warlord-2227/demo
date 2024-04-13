@@ -40,7 +40,7 @@ resource "google_pubsub_topic" "result_topic" {
 
 # Google Cloud Function
 resource "google_cloudfunctions_function" "cloud_function" {
-  name                  = "ad-score-functions"
+  name                  = "ad-score-function"
   description           = "A function triggered by Pub/Sub to process ad scores"
   runtime               = "python310"  
   available_memory_mb   = 1024

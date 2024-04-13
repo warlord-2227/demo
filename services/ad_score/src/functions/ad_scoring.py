@@ -28,9 +28,10 @@ class ad_scoring_model():
 
         return self.model_performance
 
-    def predicting_model(self,event,env_variables):
+    def predicting_model(self,event):
         """to get the predictions, probabilities and scores by ad_scoring_model.dict_metrics"""
         logging.getLogger().setLevel(logging.INFO)
+        logging.info(f"Input even_info {event.keys()}")
         pubsub_message = base64.b64decode(event["data"]).decode('utf-8')
         input_data = json.loads(pubsub_message)
         logging.info(f"Keys in it {input_data.keys()}")
@@ -52,8 +53,9 @@ class ad_scoring_model():
         # Pushing to Pub-Sub
         publisher = pubsub_v1.PublisherClient()
         # TODO config driven 
-        # result_topic = "projects/within-merlin/topics/pubsub-ad_score-meta-dev"
-        result_topic = env_variables["result_topic"]
+        result_topic = "projects/my-project-6242-308916/topics/pubsub-result-topic"
+        
+        # result_topic = env_variables["result_topic"]
         future = publisher.publish(result_topic, data=json.dumps(json_output).encode('utf-8'))
         logging.info("Output json pushed to Pub/Sub")
         return json_output
