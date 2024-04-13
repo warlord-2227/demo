@@ -26,7 +26,15 @@ def hello_pubsub(cloud_event,context):
         ad_model.predicting_model(cloud_event)
         logging.info(f"Successfully worked")
     except Exception as e:
-        logging.info(f"error as {e}")
+        logging.exception("An error occurred while processing the Pub/Sub message:")
+        # Handle the error appropriately - for example, notify an error handling service or trigger an alert
+
+        # You could also publish an error message to a Pub/Sub topic
+        error_message = json.dumps({"error": str(e)}).encode('utf-8')
+        result_topic = "projects/my-project-6242-308916/topics/pubsub-result-topic"
+        publisher = pubsub_v1.PublisherClient()
+        publisher.publish(result_topic, data=error_message)
+        logging.info(f"Error details published to topic {result_topic}")
         
 
 # def hello_pubsub(cloud_event,context):
